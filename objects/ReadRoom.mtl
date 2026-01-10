@@ -1,0 +1,184 @@
+# Blender 3.3.18 MTL File: 'ReadRoom.blend'
+# www.blender.org
+
+newmtl 01_-_Default
+Ka 1.000000 1.000000 1.000000
+Kd 0.588235 0.588235 0.588235
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Ns C:/Users/golde/Nextcloud/3D/Props/Object/Book_open_01/textures/Book_Open_Roughness.tga.png
+
+newmtl Chair_wood
+Ns 116.219032
+Ka 1.000000 1.000000 1.000000
+Kd 0.155926 0.064803 0.038204
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl FabricDenim003_HIRES
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl FabricLeatherBuffaloRustic001_2K
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl FabricLeatherBuffaloRustic001_2K.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl FabricPlainWhiteBlackout009_2K
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.303739 0.262864 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl InteriorDesignRugStarryNight001_2K
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Mat
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.426667 0.160000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns C:/Users/golde/Nextcloud/3D/Props/Vegetal/monstera-deliciosa-potted-mid-century-plant/textures/DefaultMaterial_Roughness.png
+map_Bump -bm 1.000000 C:/Users/golde/Nextcloud/3D/Props/Vegetal/monstera-deliciosa-potted-mid-century-plant/textures/DefaultMaterial_Normal_OpenGL.png
+
+newmtl Mat.1
+Ka 1.000000 1.000000 1.000000
+Kd 0.665700 0.142800 0.840000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Ns C:/Users/golde/Nextcloud/3D/Props/Vegetal/monstera-deliciosa-potted-mid-century-plant/textures/Cube_1_Roughness.png
+map_d C:/Users/golde/Nextcloud/3D/Props/Vegetal/monstera-deliciosa-potted-mid-century-plant/textures/Cube_1_Opacity.png
+map_Bump -bm 1.000000 C:/Users/golde/Nextcloud/3D/Props/Vegetal/monstera-deliciosa-potted-mid-century-plant/textures/Cube_1_Normal_OpenGL.png
+
+newmtl Mat.2
+Ns 319.999939
+Ka 1.000000 1.000000 1.000000
+Kd 0.352000 0.717867 0.800000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Material
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Material.002
+Ns 1000.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.413950 0.344755
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl WoodFineDark004_2K
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl WoodFlooringMerbauBrickBondNatural001_2K
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl WoodenTable_01
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd WoodenTable_01_Textures/WoodenTable_01_8-bit_Diffuse.png
+
+newmtl cable
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.059209 0.059209 0.059209
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl light
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.799103 0.391572 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.799103 0.391572 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl window
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2

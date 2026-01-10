@@ -1,0 +1,29 @@
+﻿  imgui_impl_sdl2.cpp
+  camera.cpp
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\camera.cpp(98,98): warning C4244: 'argument' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\camera.cpp(124,46): warning C4244: 'argument' : conversion de 'double' en 'float', perte possible de données
+  main.cpp
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(171,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(172,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(173,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(178,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(179,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(180,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(185,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(186,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(187,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(192,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(193,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(194,33): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(202,49): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(207,49): warning C4244: '=' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(339,29): warning C4244: 'initialisation' : conversion de 'unsigned __int64' en 'unsigned int', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(363,18): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(389,117): warning C4244: 'argument' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(389,88): warning C4244: 'argument' : conversion de 'float' en 'Uint8', perte possible de données
+C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\main.cpp(389,59): warning C4244: 'argument' : conversion de 'float' en 'Uint8', perte possible de données
+  material.cpp
+  object.cpp
+  Génération de code en cours...
+  LINK : C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\x64\Debug\3D Render.exe introuvable ou non généré par la dernière édition de liens incrémentielle ; édition de liens complète en cours
+  3D Render.vcxproj -> C:\Users\golde\Nextcloud\Programmation\CC++\3D Render\x64\Debug\3D Render.exe
