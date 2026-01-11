@@ -385,7 +385,7 @@ int main(int argc, char* argv[]) {
 
 
 
-
+		// Render of 3D scene
 		SDL_SetRenderDrawColor(gRenderer, camera_1.global_light * 255, camera_1.global_light * 255, camera_1.global_light * 255, 255);
 		SDL_RenderClear(gRenderer);
 		SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);

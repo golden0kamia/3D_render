@@ -1,0 +1,3 @@
+[submodule "libgltf"]
+	path = libgltf
+	url = https://github.com/code4game/libgltf.git
