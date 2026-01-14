@@ -1,2 +1,0 @@
-﻿  TestRotozoom.c
-D:\Téléchargements\SDL2_gfx-1.0.4\SDL2_gfx-1.0.4\test\TestRotozoom.c(22,10): fatal error C1083: Impossible d'ouvrir le fichier include : 'SDL_test_common.h' : No such file or directory
