@@ -73,7 +73,7 @@ int camera::render_object(std::vector<object> objects)
 
 			// Create white color
 			//SDL_Color face_color = color_factor(obj.color, sin(normalise_normal * (M_PI / 2)));
-			SDL_Color face_color = color_factor(face.mtl->Kd, std::max(normalise_normal, this->global_light));
+			SDL_FColor face_color = color_factor(face.mtl->Kd, std::max(normalise_normal, this->global_light));
 
 			// Create vertex for geometry
 			SDL_Vertex vx1 = { v1_2D, face_color, face.vt1 };
@@ -101,9 +101,9 @@ int camera::render_object(std::vector<object> objects)
 		// Rendering mesh
 		if (this->mesh_display) {
 			SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
-			SDL_RenderDrawLineF(this->renderer, face.v1.position.x, face.v1.position.y, face.v2.position.x, face.v2.position.y);
-			SDL_RenderDrawLineF(this->renderer, face.v2.position.x, face.v2.position.y, face.v3.position.x, face.v3.position.y);
-			SDL_RenderDrawLineF(this->renderer, face.v3.position.x, face.v3.position.y, face.v1.position.x, face.v1.position.y);
+			SDL_RenderLine(this->renderer, face.v1.position.x, face.v1.position.y, face.v2.position.x, face.v2.position.y);
+			SDL_RenderLine(this->renderer, face.v2.position.x, face.v2.position.y, face.v3.position.x, face.v3.position.y);
+			SDL_RenderLine(this->renderer, face.v3.position.x, face.v3.position.y, face.v1.position.x, face.v1.position.y);
 		}
 	}
 	if (trigon.empty()) return 0;
@@ -124,7 +124,7 @@ float camera::length()
 	return (this->screen_size.x / 2) / tanf(M_PI*(fov/360.f));
 }
 
-SDL_Color color_factor(SDL_Color color, float factor)
+SDL_FColor color_factor(SDL_Color color, float factor)
 {
-	return { (Uint8)(color.r * factor), (Uint8)(color.g * factor), (Uint8)(color.b * factor), color.a };
+	return { (color.r * factor), (color.g * factor), (color.b * factor), (float)color.a };
 }

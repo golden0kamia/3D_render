@@ -22,13 +22,13 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Create window
-	SDL_Window* gWindow = SDL_CreateWindow("3D Render", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+	SDL_Window* gWindow = SDL_CreateWindow("3D Render", WINDOW_WIDTH, WINDOW_HEIGHT, 0);
 	if (gWindow == nullptr) {
 		SDL_LogError(0, SDL_GetError());
 		return -1;
 	}
 	// Create renderer
-	SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, -1, 0);
+	SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, NULL);
 	if (gRenderer == nullptr) {
 		SDL_LogError(0, SDL_GetError());
 		return -1;
@@ -242,7 +242,7 @@ int main(int argc, char* argv[]) {
 	// Setup SDL
 	// (Some versions of SDL before <2.0.10 appears to have performance/stalling issues on a minority of Windows systems,
 	// depending on whether SDL_INIT_GAMECONTROLLER is enabled or disabled.. updating to the latest version of SDL is recommended!)
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD) != 0)
 	{
 		printf("Error: %s\n", SDL_GetError());
 		return -1;
@@ -254,8 +254,8 @@ int main(int argc, char* argv[]) {
 #endif
 
 	// Setup window
-	SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-	SDL_Window* window = SDL_CreateWindow("Dear ImGui SDL2+DirectX11 example", 0, 50, 640, 480, window_flags);
+	SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+	SDL_Window* window = SDL_CreateWindow("Dear ImGui SDL2+DirectX11 example", 640, 480, window_flags);
 	if (window == nullptr)
 	{
 		printf("Error: SDL_CreateWindow(): %s\n", SDL_GetError());
@@ -263,7 +263,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	{
-		SDL_SysWMinfo wmInfo;
+		/*SDL_SysWMinfo wmInfo;
 		SDL_VERSION(&wmInfo.version);
 		SDL_GetWindowWMInfo(window, &wmInfo);
 		HWND hwnd = (HWND)wmInfo.info.win.window;
@@ -273,7 +273,7 @@ int main(int argc, char* argv[]) {
 		{
 			CleanupDeviceD3D();
 			return 1;
-		}
+		}*/
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -287,7 +287,7 @@ int main(int argc, char* argv[]) {
 		//ImGui::StyleColorsLight();
 
 		// Setup Platform/Renderer backends
-		ImGui_ImplSDL2_InitForD3D(window);
+		ImGui_ImplSDL3_InitForD3D(window);
 		ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 	}
 
@@ -327,7 +327,7 @@ int main(int argc, char* argv[]) {
 		{
 			
 			ImGui_ImplDX11_NewFrame();
-			ImGui_ImplSDL2_NewFrame();
+			ImGui_ImplSDL3_NewFrame();
 			ImGui::NewFrame();
 		}
 
@@ -393,15 +393,15 @@ int main(int argc, char* argv[]) {
 
 		//Event handling
 		while (SDL_PollEvent(&Event)) {
-			ImGui_ImplSDL2_ProcessEvent(&Event);
+			ImGui_ImplSDL3_ProcessEvent(&Event);
 			switch (Event.type) {
-			case SDL_QUIT:
+			case SDL_EVENT_QUIT:
 				run = false;
 				SDL_Log("Quit window\n");
 				break;
-			case SDL_KEYDOWN:
-				switch (Event.key.keysym.sym) {
-				case SDLK_w:
+			case SDL_EVENT_KEY_DOWN:
+				switch (Event.key.key) {
+				case SDLK_W:
 					camera_1.position.x =+ 0.1f;
 				}
 			default:
@@ -415,7 +415,7 @@ int main(int argc, char* argv[]) {
 	// Cleanup
 	{
 		ImGui_ImplDX11_Shutdown();
-		ImGui_ImplSDL2_Shutdown();
+		ImGui_ImplSDL3_Shutdown();
 		ImGui::DestroyContext();
 		CleanupDeviceD3D();
 	}

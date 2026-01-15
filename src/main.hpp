@@ -8,15 +8,17 @@
 
 #include <iostream>
 #include <stdio.h>
-#include <SDL.h>
-#include <SDL_surface.h>
-#include <SDL_image.h>
-#include <SDL_syswm.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_surface.h>
+#include <SDL3_image/SDL_image.h>
+//#include <SDL_syswm.h>
 #include "object.hpp"
 #include "camera.hpp"
-#include "Library/ImGui/imgui.h"
-#include "Library/ImGui/imgui_impl_dx11.h"
-#include "Library/ImGui/imgui_impl_sdl2.h"
+#include <imgui.h>
+//#include "Library/ImGui/imgui_impl_dx11.h"
+//#include "Library/ImGui/imgui_impl_sdl2.h"
+#include <imgui_impl_dx11.h>
+#include <imgui_impl_sdl3.h>
 #include <d3d11.h>
 
  // Data

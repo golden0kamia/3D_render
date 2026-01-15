@@ -22,7 +22,7 @@ public:
     float length();
 };
 
-SDL_Color color_factor(SDL_Color color, float factor);
+SDL_FColor color_factor(SDL_Color color, float factor);
 
 typedef struct vertex_gemoetry {
     SDL_Vertex v1;

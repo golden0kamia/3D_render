@@ -10,7 +10,7 @@
 #define VERTICE_HPP
 
 #include <cmath>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 typedef struct vertice_3_f {
 	float x, y, z;

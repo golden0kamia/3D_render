@@ -4,6 +4,10 @@ project(3D_render)
 set(CMAKE_CXX_STANDARD 14)
 
 include_directories(src)
+include_directories(libraries/imgui)
+include_directories(libraries/imgui/backends)
+include_directories(libraries/SDL/include)
+include_directories(libraries/SDL_image/include)
 
 add_executable(3D_render
         src/camera.cpp

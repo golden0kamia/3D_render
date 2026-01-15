@@ -8,8 +8,8 @@
 #pragma once
 #include "face.hpp"
 #include "material.hpp"
-#include <SDL.h>
-#include "Library/ImGui/imgui.h"
+#include <SDL3/SDL.h>
+#include <imgui.h>
 #include <string>
 #include <fstream>
 #include <strstream>
