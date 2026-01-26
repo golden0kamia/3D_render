@@ -7,3 +7,6 @@
 [submodule "libraries/SDL_image"]
 	path = libraries/SDL_image
 	url = https://github.com/libsdl-org/SDL_image.git
+[submodule "libraries/gltf"]
+	path = libraries/gltf
+	url = https://github.com/spnda/fastgltf.git

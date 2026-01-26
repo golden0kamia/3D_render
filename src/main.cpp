@@ -6,32 +6,33 @@
  * \date   April 2024
  *********************************************************************/
 
-#include "main.hpp"
 
-#define WINDOW_WIDTH 1920-50
-#define WINDOW_HEIGHT 1080-50
+#include <main.hpp>
+
+#define WINDOW_WIDTH (1920)
+#define WINDOW_HEIGHT (1080)
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
-	SDL_Log("Start 3D Render\n");
+	SDL_Log("%s", "Start 3D Render\n");
 
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
-		SDL_LogError(0, SDL_GetError());
-		return -1;
+	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
+		SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, "%s", SDL_GetError());
+		return -10;
 	}
 
 	// Create window
 	SDL_Window* gWindow = SDL_CreateWindow("3D Render", WINDOW_WIDTH, WINDOW_HEIGHT, 0);
 	if (gWindow == nullptr) {
-		SDL_LogError(0, SDL_GetError());
-		return -1;
+		SDL_LogError(0, "%s", SDL_GetError());
+		return -2;
 	}
 	// Create renderer
-	SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, NULL);
+	SDL_Renderer* gRenderer = SDL_CreateRenderer(gWindow, nullptr);
 	if (gRenderer == nullptr) {
-		SDL_LogError(0, SDL_GetError());
-		return -1;
+		SDL_LogError(0, "%s", SDL_GetError());
+		return -3;
 	}
 
 	//Clear Render with black color
@@ -47,17 +48,19 @@ int main(int argc, char* argv[]) {
 		//camera_1.angle = { 0., -M_PI/2., 0. };
 	}
 
+	// Load file object to memory
 	std::vector<object> objects;
-	std::vector<material> materials;
-	string filename = argv[1];
+	if (argc == 1)
 	{
+		std::vector<material> materials;
+		string filename = "test_cube.obj";//argv[1];
 		std::vector<vertice_3_f> vertices;
 		std::vector<SDL_FPoint> vertices_texture;
 		std::vector<vertice_3_f> vertices_normal;
 		material* use_mtl = nullptr;
-		std::string path_base("objects/");
+		std::string path_base(R"(C:\Users\Bastien\Projets\3D_render\objects\)");
 		std::ifstream file(path_base + filename);
-		if (!file.is_open()) return -1;
+		if (!file.is_open()) return -7;
 
 		char line[1024];
 		while (!file.eof()) {
@@ -68,7 +71,7 @@ int main(int argc, char* argv[]) {
 			string type;
 			line_str >> type;
 			if (type == "o") {
-				objects.push_back(object());
+				objects.emplace_back();
 				line_str >> objects.back().name;
 				//SDL_Log("New object: %s", objects.back().name.c_str());
 			}
@@ -111,7 +114,7 @@ int main(int argc, char* argv[]) {
 						continue;
 					}
 				}
-				objects.back().faces.push_back(face_f());
+				objects.back().faces.emplace_back();
 				objects.back().faces.back().v1 = vertices[vertices_n[0] - 1];
 				objects.back().faces.back().v2 = vertices[vertices_n[1] - 1];
 				objects.back().faces.back().v3 = vertices[vertices_n[2] - 1];
@@ -158,7 +161,7 @@ int main(int argc, char* argv[]) {
 					string type_m;
 					line_m_str >> type_m;
 					if (type_m == "newmtl") {
-						materials.push_back(material());
+						materials.emplace_back();
 						line_m_str >> materials.back().name;
 						//SDL_Log("New material: %s", materials.back().name.c_str());
 					}
@@ -207,31 +210,31 @@ int main(int argc, char* argv[]) {
 						materials.back().Kd.a = materials.back().d*255;
 					}
 					else if (type_m == "map_Ka") {
-						string filename;
-						line_m_str >> filename;
-						filename = path_base + filename;
-						SDL_Surface* image = IMG_Load(filename.c_str());
+						string map_filename;
+						line_m_str >> map_filename;
+						map_filename = path_base + map_filename;
+						SDL_Surface* image = IMG_Load(map_filename.c_str());
 						materials.back().map_Ka = SDL_CreateTextureFromSurface(gRenderer, image);
 					}
 					else if (type_m == "map_Kd") {
-						string filename;
-						line_m_str >> filename;
-						filename = path_base + filename;
-						SDL_Surface* image = IMG_Load(filename.c_str());
+						string map_filename;
+						line_m_str >> map_filename;
+						map_filename = path_base + map_filename;
+						SDL_Surface* image = IMG_Load(map_filename.c_str());
 						materials.back().map_Kd = SDL_CreateTextureFromSurface(gRenderer, image);
 					}
 					else if (type_m == "map_Ks") {
-						string filename;
-						line_m_str >> filename;
-						filename = path_base + filename;
-						SDL_Surface* image = IMG_Load(filename.c_str());
+						string map_filename;
+						line_m_str >> map_filename;
+						map_filename = path_base + map_filename;
+						SDL_Surface* image = IMG_Load(map_filename.c_str());
 						materials.back().map_Ks = SDL_CreateTextureFromSurface(gRenderer, image);
 					}
 					else if (type_m == "map_Ns") {
-						string filename;
-						line_m_str >> filename;
-						if(filename[1] != ':') filename = path_base + filename;
-						SDL_Surface* image = IMG_Load(filename.c_str());
+						string map_filename;
+						line_m_str >> map_filename;
+						if(map_filename[1] != ':') map_filename = path_base + map_filename;
+						SDL_Surface* image = IMG_Load(map_filename.c_str());
 						materials.back().map_Ns = SDL_CreateTextureFromSurface(gRenderer, image);
 					}
 				}
@@ -242,38 +245,64 @@ int main(int argc, char* argv[]) {
 	// Setup SDL
 	// (Some versions of SDL before <2.0.10 appears to have performance/stalling issues on a minority of Windows systems,
 	// depending on whether SDL_INIT_GAMECONTROLLER is enabled or disabled.. updating to the latest version of SDL is recommended!)
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD) != 0)
+	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD))
 	{
 		printf("Error: %s\n", SDL_GetError());
-		return -1;
+		return -5;
 	}
 
-	// From 2.0.18: Enable native IME.
-#ifdef SDL_HINT_IME_SHOW_UI
-	SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
-#endif
-
+#ifdef DEBUG_WINDOW
 	// Setup window
-	SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
-	SDL_Window* window = SDL_CreateWindow("Dear ImGui SDL2+DirectX11 example", 640, 480, window_flags);
+	SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+	SDL_Window* window = SDL_CreateWindow("Dear ImGui SDL3+OpenGL3 example", 640, 480, window_flags);
 	if (window == nullptr)
 	{
 		printf("Error: SDL_CreateWindow(): %s\n", SDL_GetError());
-		return -1;
+		return -6;
 	}
 
-	{
-		/*SDL_SysWMinfo wmInfo;
-		SDL_VERSION(&wmInfo.version);
-		SDL_GetWindowWMInfo(window, &wmInfo);
-		HWND hwnd = (HWND)wmInfo.info.win.window;
+		// Decide GL+GLSL versions
+#if defined(IMGUI_IMPL_OPENGL_ES2)
+		// GL ES 2.0 + GLSL 100 (WebGL 1.0)
+		const char* glsl_version = "#version 100";
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#elif defined(IMGUI_IMPL_OPENGL_ES3)
+		// GL ES 3.0 + GLSL 300 es (WebGL 2.0)
+		const char* glsl_version = "#version 300 es";
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#elif defined(__APPLE__)
+		// GL 3.2 Core + GLSL 150
+		const char* glsl_version = "#version 150";
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+#else
+		// GL 3.0 + GLSL 130
+		const char* glsl_version = "#version 130";
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
 
-		// Initialize Direct3D
-		if (!CreateDeviceD3D(hwnd))
+		SDL_GLContext gl_context = SDL_GL_CreateContext(window);
+		if (gl_context == nullptr)
 		{
-			CleanupDeviceD3D();
+			printf("Error: SDL_GL_CreateContext(): %s\n", SDL_GetError());
 			return 1;
-		}*/
+		}
+
+		SDL_GL_MakeCurrent(window, gl_context);
+		SDL_GL_SetSwapInterval(1); // Enable vsync
+		SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+		SDL_ShowWindow(window);
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -286,10 +315,21 @@ int main(int argc, char* argv[]) {
 		ImGui::StyleColorsDark();
 		//ImGui::StyleColorsLight();
 
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+		float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
+
+		// Setup scaling
+		ImGuiStyle& style = ImGui::GetStyle();
+		style.ScaleAllSizes(main_scale);        // Bake a fixed style scale. (until we have a solution for dynamic style scaling, changing this requires resetting Style + calling this again)
+		style.FontScaleDpi = main_scale;        // Set initial font scale. (using io.ConfigDpiScaleFonts=true makes this unnecessary. We leave both here for documentation purpose)
+
 		// Setup Platform/Renderer backends
-		ImGui_ImplSDL3_InitForD3D(window);
-		ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
-	}
+		ImGui_ImplSDL3_InitForOpenGL(window, gl_context);
+		ImGui_ImplOpenGL3_Init(glsl_version);
+
+#endif
 
 	// Load Fonts
 	// - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
@@ -308,25 +348,22 @@ int main(int argc, char* argv[]) {
 	//IM_ASSERT(font != nullptr);
 
 	// Our state
-	bool show_demo_window = true;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	SDL_Event Event;
 	bool run = true;
 	bool vsync = true;
 
-	unsigned int fps = 60;
+	unsigned int fps;
 	unsigned long long ticks = SDL_GetTicks();
-
-	int r = 255, g = 255, b = 255;
 
 	while (run) {
 
-		
+#ifdef DEBUG_WINDOW
 		// Start the Dear ImGui frame
 		{
 			
-			ImGui_ImplDX11_NewFrame();
+			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplSDL3_NewFrame();
 			ImGui::NewFrame();
 		}
@@ -338,7 +375,7 @@ int main(int argc, char* argv[]) {
 			ImGui::Begin("Move object", &run);
 			unsigned int  diff_ticks = SDL_GetTicks() - ticks;
 			ticks = SDL_GetTicks();
-			fps = (unsigned int)(1000. / average_ticks(diff_ticks));
+			fps = static_cast<unsigned int>(1000. / average_ticks(diff_ticks));
 			ImGui::Value("FPS", fps);
 			ImGui::Value("Ticks", (unsigned int)diff_ticks);
 			ImGui::Checkbox("vsync", &vsync);
@@ -372,17 +409,16 @@ int main(int argc, char* argv[]) {
 		}
 
 
-		// Renderinga
+		// Rendering
 		{
 			ImGui::Render();
-			const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
-			g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
-			g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clear_color_with_alpha);
-			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-			g_pSwapChain->Present(vsync, 0); // Present with vsync
-			//g_pSwapChain->Present(0, 0); // Present without vsync
+			glViewport(0, 0, static_cast<int>(io.DisplaySize.x), static_cast<int>(io.DisplaySize.y));
+			glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+			glClear(GL_COLOR_BUFFER_BIT);
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			SDL_GL_SwapWindow(window);
 		}
-
+#endif
 
 
 		// Render of 3D scene
@@ -402,7 +438,9 @@ int main(int argc, char* argv[]) {
 			case SDL_EVENT_KEY_DOWN:
 				switch (Event.key.key) {
 				case SDLK_W:
-					camera_1.position.x =+ 0.1f;
+					camera_1.position.x += 0.1f;
+				default:
+					break;
 				}
 			default:
 				//std::cout << Event.type << std::endl;
@@ -412,18 +450,23 @@ int main(int argc, char* argv[]) {
 		SDL_RenderPresent(gRenderer);
 	}
 
-	// Cleanup
+#ifdef DEBUG_WINDOW
+	// Cleanup IMGUI
 	{
-		ImGui_ImplDX11_Shutdown();
+		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplSDL3_Shutdown();
 		ImGui::DestroyContext();
-		CleanupDeviceD3D();
+		SDL_GL_DestroyContext(gl_context);
+		SDL_DestroyWindow(window);
+	}
+#endif
+
+	{
+		SDL_DestroyRenderer(gRenderer);
+		SDL_DestroyWindow(gWindow);
+		SDL_Quit();
 	}
 
-	SDL_DestroyWindow(window);
-
-	SDL_DestroyRenderer(gRenderer);
-	SDL_DestroyWindow(gWindow);
 
 	SDL_Log("End 3D Render\n");
 	return 0;
@@ -439,57 +482,5 @@ unsigned int average_ticks(unsigned int ticks) {
 	}
 	index++;
 	if (index == 100) index = 0;
-	return (unsigned int)(sum / 100);
-}
-
-// Helper functions to use DirectX11
-bool CreateDeviceD3D(HWND hWnd)
-{
-	// Setup swap chain
-	DXGI_SWAP_CHAIN_DESC sd;
-	ZeroMemory(&sd, sizeof(sd));
-	sd.BufferCount = 2;
-	sd.BufferDesc.Width = 0;
-	sd.BufferDesc.Height = 0;
-	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	sd.BufferDesc.RefreshRate.Numerator = 60;
-	sd.BufferDesc.RefreshRate.Denominator = 1;
-	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.OutputWindow = hWnd;
-	sd.SampleDesc.Count = 1;
-	sd.SampleDesc.Quality = 0;
-	sd.Windowed = TRUE;
-	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-
-	UINT createDeviceFlags = 0;
-	//createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-	D3D_FEATURE_LEVEL featureLevel;
-	const D3D_FEATURE_LEVEL featureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
-	if (D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext) != S_OK)
-		return false;
-
-	CreateRenderTarget();
-	return true;
-}
-
-void CleanupDeviceD3D()
-{
-	CleanupRenderTarget();
-	if (g_pSwapChain) { g_pSwapChain->Release(); g_pSwapChain = nullptr; }
-	if (g_pd3dDeviceContext) { g_pd3dDeviceContext->Release(); g_pd3dDeviceContext = nullptr; }
-	if (g_pd3dDevice) { g_pd3dDevice->Release(); g_pd3dDevice = nullptr; }
-}
-
-void CreateRenderTarget()
-{
-	ID3D11Texture2D* pBackBuffer;
-	g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-	g_pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &g_mainRenderTargetView);
-	pBackBuffer->Release();
-}
-
-void CleanupRenderTarget()
-{
-	if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = nullptr; }
+	return static_cast<unsigned int>(sum / 100);
 }

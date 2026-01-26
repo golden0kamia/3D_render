@@ -1,23 +1,34 @@
 cmake_minimum_required(VERSION 4.1)
 project(3D_render)
 
-set(CMAKE_CXX_STANDARD 14)
-
 include_directories(src)
+
+include_directories(libraries/SDL/include/SDL3)
+add_subdirectory(libraries/SDL EXCLUDE_FROM_ALL)
+
+#set(SDL3_DIR "${CMAKE_SOURCE_DIR}/libraries/SDL/cmake-build-debug")
+#find_package(SDL3 REQUIRED)
+include_directories(libraries/SDL_image/include/SDL3_image)
+add_subdirectory(libraries/SDL_image EXCLUDE_FROM_ALL)
+
 include_directories(libraries/imgui)
-include_directories(libraries/imgui/backends)
-include_directories(libraries/SDL/include)
-include_directories(libraries/SDL_image/include)
+add_subdirectory(libraries/imgui EXCLUDE_FROM_ALL)
+
+include_directories(libraries/gltf/include)
+add_subdirectory(libraries/gltf EXCLUDE_FROM_ALL)
+
+set(CMAKE_CXX_STANDARD 20)
 
 add_executable(3D_render
-        src/camera.cpp
-        src/camera.hpp
-        src/face.hpp
         src/main.cpp
-        src/main.hpp
+        src/camera.cpp
         src/material.cpp
-        src/material.hpp
         src/object.cpp
-        src/object.hpp
-        src/vertice.cpp
-        src/vertice.hpp)
+        src/vertice.cpp)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC
+    SDL3::SDL3
+    SDL3_image::SDL3_image
+    imgui
+    fastgltf
+)
