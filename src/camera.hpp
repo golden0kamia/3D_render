@@ -22,13 +22,13 @@ public:
     float length();
 };
 
-SDL_FColor color_factor(SDL_Color color, float factor);
+SDL_FColor color_factor(SDL_FColor color, float factor);
 
-typedef struct vertex_gemoetry {
+typedef struct vertex_geometry {
     SDL_Vertex v1;
     SDL_Vertex v2;
     SDL_Vertex v3;
     float z;
     material* mtl;
-}vertex_gemoetry;
+}vertex_geometry;
 

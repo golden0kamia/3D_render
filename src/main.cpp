@@ -15,6 +15,10 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
+	/*fastgltf::Parser parser;
+	std::filesystem::path path = R"(C:\Users\Bastien\Desktop\cube.glb)";
+	auto gltf_file = fastgltf::GltfDataBuffer::FromPath(path);
+	auto asset = parser.loadGltf(gltf_file.get(), path.parent_path(), fastgltf::Options::None);*/
 	SDL_Log("%s", "Start 3D Render\n");
 
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
@@ -36,23 +40,23 @@ int main(int argc, char* argv[]) {
 	}
 
 	//Clear Render with black color
-	SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(gRenderer);
 
 	SDL_RenderPresent(gRenderer);
 	camera camera_1(gRenderer);
 	{
-		camera_1.set_screen_size({ WINDOW_WIDTH, WINDOW_HEIGHT });
+		camera_1.set_screen_size((SDL_Point){ WINDOW_WIDTH, WINDOW_HEIGHT });
 		camera_1.fov = 90;
-		camera_1.position = { 0., 0., -20. };
+		camera_1.position = (vertice_3_f){ 0., 0., -20. };
 		//camera_1.angle = { 0., -M_PI/2., 0. };
 	}
 
 	// Load file object to memory
 	std::vector<object> objects;
+	std::vector<material> materials;
 	if (argc == 1)
 	{
-		std::vector<material> materials;
 		string filename = "test_cube.obj";//argv[1];
 		std::vector<vertice_3_f> vertices;
 		std::vector<SDL_FPoint> vertices_texture;
@@ -73,7 +77,7 @@ int main(int argc, char* argv[]) {
 			if (type == "o") {
 				objects.emplace_back();
 				line_str >> objects.back().name;
-				//SDL_Log("New object: %s", objects.back().name.c_str());
+				SDL_Log("New object: %s", objects.back().name.c_str());
 			}
 			else if (type == "v") {
 				vertice_3_f vtmp;
@@ -111,7 +115,6 @@ int main(int argc, char* argv[]) {
 						line_str.get(sepa);
 					}
 					else if (sepa == ' ') {
-						continue;
 					}
 				}
 				objects.back().faces.emplace_back();
@@ -135,7 +138,7 @@ int main(int argc, char* argv[]) {
 			else if (type == "usemtl") {
 				string mtl_name;
 				line_str >> mtl_name;
-				//SDL_Log("Use material: %s", mtl_name.c_str());
+				SDL_Log("Use material: %s", mtl_name.c_str());
 				use_mtl = nullptr;
 				for (material &mtl : materials) {
 					if (mtl.name == mtl_name) {
@@ -149,7 +152,7 @@ int main(int argc, char* argv[]) {
 			else if (type == "mtllib") {
 				std::string mtl_path;
 				line_str >> mtl_path;
-				//SDL_Log("Open Material library: %s", mtl_path.c_str());
+				SDL_Log("Open Material library: %s", mtl_path.c_str());
 				std::ifstream mtl(path_base + mtl_path);
 				char line_m[1024];
 
@@ -163,7 +166,7 @@ int main(int argc, char* argv[]) {
 					if (type_m == "newmtl") {
 						materials.emplace_back();
 						line_m_str >> materials.back().name;
-						//SDL_Log("New material: %s", materials.back().name.c_str());
+						SDL_Log("New material: %s", materials.back().name.c_str());
 					}
 					else if (type_m == "Ns") {
 						line_m_str >> materials.back().Ns;
@@ -171,30 +174,30 @@ int main(int argc, char* argv[]) {
 					else if (type_m == "Ka") {
 						float r, g, b;
 						line_m_str >> r >> g >> b;
-						materials.back().Ka.r = r * 255;
-						materials.back().Ka.g = g * 255;
-						materials.back().Ka.b = b * 255;
+						materials.back().Ka.r = r;
+						materials.back().Ka.g = g;
+						materials.back().Ka.b = b;
 					}
 					else if (type_m == "Kd") {
 						float r, g, b;
 						line_m_str >> r >> g >> b;
-						materials.back().Kd.r = r * 255;
-						materials.back().Kd.g = g * 255;
-						materials.back().Kd.b = b * 255;
+						materials.back().Kd.r = r;
+						materials.back().Kd.g = g;
+						materials.back().Kd.b = b;
 					}
 					else if (type_m == "Ks") {
 						float r, g, b;
 						line_m_str >> r >> g >> b;
-						materials.back().Ks.r = r * 255;
-						materials.back().Ks.g = g * 255;
-						materials.back().Ks.b = b * 255;
+						materials.back().Ks.r = r;
+						materials.back().Ks.g = g;
+						materials.back().Ks.b = b;
 					}
 					else if (type_m == "Ke") {
 						float r, g, b;
 						line_m_str >> r >> g >> b;
-						materials.back().Ke.r = r * 255;
-						materials.back().Ke.g = g * 255;
-						materials.back().Ke.b = b * 255;
+						materials.back().Ke.r = r;
+						materials.back().Ke.g = g;
+						materials.back().Ke.b = b;
 					}
 					else if (type_m == "Ni") {
 						line_m_str >> materials.back().Ni;
@@ -202,18 +205,21 @@ int main(int argc, char* argv[]) {
 					else if (type_m == "d") {
 						line_m_str >> materials.back().d;
 						materials.back().Tr = 1 / materials.back().d;
-						materials.back().Kd.a = materials.back().d*255;
+						materials.back().Kd.a = materials.back().d;
 					}
 					else if (type_m == "Tr") {
 						line_m_str >> materials.back().Tr;
 						materials.back().d = 1 / materials.back().Tr;
-						materials.back().Kd.a = materials.back().d*255;
+						materials.back().Kd.a = materials.back().d;
 					}
 					else if (type_m == "map_Ka") {
 						string map_filename;
 						line_m_str >> map_filename;
 						map_filename = path_base + map_filename;
 						SDL_Surface* image = IMG_Load(map_filename.c_str());
+						if (image == nullptr) {
+							SDL_Log("Error loading texture Ka: %s", map_filename.c_str());
+						}
 						materials.back().map_Ka = SDL_CreateTextureFromSurface(gRenderer, image);
 					}
 					else if (type_m == "map_Kd") {
@@ -221,6 +227,9 @@ int main(int argc, char* argv[]) {
 						line_m_str >> map_filename;
 						map_filename = path_base + map_filename;
 						SDL_Surface* image = IMG_Load(map_filename.c_str());
+						if (image== nullptr) {
+							SDL_Log("Error loading texture Kd: %s", map_filename.c_str());
+						}
 						materials.back().map_Kd = SDL_CreateTextureFromSurface(gRenderer, image);
 					}
 					else if (type_m == "map_Ks") {
@@ -228,6 +237,9 @@ int main(int argc, char* argv[]) {
 						line_m_str >> map_filename;
 						map_filename = path_base + map_filename;
 						SDL_Surface* image = IMG_Load(map_filename.c_str());
+						if (image== nullptr) {
+							SDL_Log("Error loading texture Ks: %s", map_filename.c_str());
+						}
 						materials.back().map_Ks = SDL_CreateTextureFromSurface(gRenderer, image);
 					}
 					else if (type_m == "map_Ns") {
@@ -235,6 +247,9 @@ int main(int argc, char* argv[]) {
 						line_m_str >> map_filename;
 						if(map_filename[1] != ':') map_filename = path_base + map_filename;
 						SDL_Surface* image = IMG_Load(map_filename.c_str());
+						if (image== nullptr) {
+							SDL_Log("Error loading texture Ns: %s", map_filename.c_str());
+						}
 						materials.back().map_Ns = SDL_CreateTextureFromSurface(gRenderer, image);
 					}
 				}
@@ -253,7 +268,7 @@ int main(int argc, char* argv[]) {
 
 #ifdef DEBUG_WINDOW
 	// Setup window
-	SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+	SDL_WindowFlags window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_HIGH_PIXEL_DENSITY;
 	SDL_Window* window = SDL_CreateWindow("Dear ImGui SDL3+OpenGL3 example", 640, 480, window_flags);
 	if (window == nullptr)
 	{
@@ -384,8 +399,8 @@ int main(int argc, char* argv[]) {
 			ImGui::Checkbox("Mesh", &camera_1.mesh_display);
 			ImGui::SliderFloat("Global light", &camera_1.global_light, 0.f, 1.f);
 			ImGui::Separator();
-			ImGui::SliderFloat("Camera x", &camera_1.position.x, -WINDOW_WIDTH / 2, WINDOW_WIDTH / 2);
-			ImGui::SliderFloat("Camera y", &camera_1.position.y, -WINDOW_HEIGHT / 2, WINDOW_HEIGHT / 2);
+			ImGui::SliderFloat("Camera x", &camera_1.position.x, -WINDOW_WIDTH / 2.f, WINDOW_WIDTH / 2.f);
+			ImGui::SliderFloat("Camera y", &camera_1.position.y, -WINDOW_HEIGHT / 2.f, WINDOW_HEIGHT / 2.f);
 			ImGui::SliderFloat("Camera z", &camera_1.position.z, -100., 100.);
 			ImGui::SliderFloat("Camera sx", &camera_1.size.x, 0., 100.);
 			ImGui::SliderFloat("Camera sy", &camera_1.size.y, 0., 100.);
@@ -397,7 +412,7 @@ int main(int argc, char* argv[]) {
 			ImGui::Value("Camera normal y", camera_1.normal.y);
 			ImGui::Value("Camera normal z", camera_1.normal.z);
 			for (object &obj : objects) {
-				float rotate = obj.angle.z + 0.001* diff_ticks;
+				float rotate = obj.angle.z + 0.001f* diff_ticks;
 				//obj.angle.z = rotate > 2 * M_PI ? 0 : rotate;
 				ImGui::Checkbox(obj.name.c_str(), &obj.display);
 			}
@@ -422,7 +437,7 @@ int main(int argc, char* argv[]) {
 
 
 		// Render of 3D scene
-		SDL_SetRenderDrawColor(gRenderer, camera_1.global_light * 255, camera_1.global_light * 255, camera_1.global_light * 255, 255);
+		SDL_SetRenderDrawColor(gRenderer, camera_1.global_light * 255, camera_1.global_light * 255, camera_1.global_light * 255, SDL_ALPHA_OPAQUE);
 		SDL_RenderClear(gRenderer);
 		SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
 		camera_1.render_object(objects);
@@ -466,7 +481,6 @@ int main(int argc, char* argv[]) {
 		SDL_DestroyWindow(gWindow);
 		SDL_Quit();
 	}
-
 
 	SDL_Log("End 3D Render\n");
 	return 0;

@@ -6,14 +6,15 @@
  * \date   April 2024
  *********************************************************************/
 #pragma once
-#include "face.hpp"
-#include "material.hpp"
+#include <face.hpp>
+#include <material.hpp>
 #include <SDL3/SDL.h>
 #include <imgui.h>
 #include <string>
 #include <fstream>
 #include <strstream>
 #include <vector>
+#include <fastgltf/core.hpp>
 
 class object
 {

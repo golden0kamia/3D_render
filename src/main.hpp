@@ -10,12 +10,12 @@
 #define DEBUG_WINDOW
 
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_surface.h>
 #include <SDL3_image/SDL_image.h>
-#include "object.hpp"
-#include "camera.hpp"
+#include <object.hpp>
+#include <camera.hpp>
 #include <fastgltf/core.hpp>
 #include <fastgltf/types.hpp>
 #ifdef DEBUG_WINDOW
@@ -23,7 +23,6 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_opengl3_loader.h>
 #include <backends/imgui_impl_sdl3.h>
-#include <d3d11.h>
 #endif
 
 unsigned int average_ticks(unsigned int ticks);

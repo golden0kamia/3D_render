@@ -12,10 +12,10 @@ class material
 {
 public:
 	float Ns; // Specular exponant
-	SDL_Color Ka = { 255, 255, 255, 255 }; // Ambiant color
-	SDL_Color Kd = { 255, 255, 255, 255 }; // Diffuse color
-	SDL_Color Ks = { 255, 255, 255, 255 }; // Specular color
-	SDL_Color Ke = { 255, 255, 255, 255 }; // Emission color
+	SDL_FColor Ka = { 1, 1, 1, 1 }; // Ambiant color
+	SDL_FColor Kd = { 1, 1, 1, 1 }; // Diffuse color
+	SDL_FColor Ks = { 1, 1, 1, 1 }; // Specular color
+	SDL_FColor Ke = { 1, 1, 1, 1 }; // Emission color
 	float Ni; // Index of refraction
 	float d; // Dissolved ( 1/transparency )
 	float Tr; // Transparency ( 1/Dissolved )
