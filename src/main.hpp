@@ -26,5 +26,7 @@
 #endif
 
 unsigned int average_ticks(unsigned int ticks);
+void file_callback(void *userdata, const char * const *filelist, int filter);
+int load_object(std::filesystem::path path, std::vector<object> *objects, SDL_Renderer * renderer);
 
 #endif // MAIN_HPP

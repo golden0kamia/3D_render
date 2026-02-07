@@ -54,208 +54,8 @@ int main(int argc, char* argv[]) {
 
 	// Load file object to memory
 	std::vector<object> objects;
-	std::vector<material> materials;
-	if (argc == 1)
-	{
-		string filename = "test_cube.obj";//argv[1];
-		std::vector<vertice_3_f> vertices;
-		std::vector<SDL_FPoint> vertices_texture;
-		std::vector<vertice_3_f> vertices_normal;
-		material* use_mtl = nullptr;
-		std::string path_base(R"(C:\Users\Bastien\Projets\3D_render\objects\)");
-		std::ifstream file(path_base + filename);
-		if (!file.is_open()) return -7;
-
-		char line[1024];
-		while (!file.eof()) {
-			file.getline(line, 1024);
-			std::strstream line_str;
-			line_str << line;
-
-			string type;
-			line_str >> type;
-			if (type == "o") {
-				objects.emplace_back();
-				line_str >> objects.back().name;
-				SDL_Log("New object: %s", objects.back().name.c_str());
-			}
-			else if (type == "v") {
-				vertice_3_f vtmp;
-				line_str >> vtmp.x >> vtmp.y >> vtmp.z;
-				vertices.push_back(vtmp);
-			}
-			else if (type == "vt") {
-				SDL_FPoint vttmp;
-				line_str >> vttmp.x >> vttmp.y;
-				vertices_texture.push_back(vttmp);
-			}
-			else if (type == "vn") {
-				vertice_3_f vntmp;
-				line_str >> vntmp.x >> vntmp.y >> vntmp.z;
-				vertices_normal.push_back(vntmp);
-			}
-			else if (type == "f") {
-				int tmp;
-				std::vector<int> vertices_n;
-				std::vector<int> textures_n;
-				std::vector<int> normals_n;
-				char sepa;
-				while (!line_str.eof()) {
-					line_str >> tmp;
-					vertices_n.push_back(tmp);
-					line_str.get(sepa);
-					if (sepa == '/' && !vertices_texture.empty()) {
-						line_str >> tmp;
-						textures_n.push_back(tmp);
-						line_str.get(sepa);
-					}
-					if (sepa == '/' && !vertices_normal.empty()) {
-						line_str >> tmp;
-						normals_n.push_back(tmp);
-						line_str.get(sepa);
-					}
-					else if (sepa == ' ') {
-					}
-				}
-				objects.back().faces.emplace_back();
-				objects.back().faces.back().v1 = vertices[vertices_n[0] - 1];
-				objects.back().faces.back().v2 = vertices[vertices_n[1] - 1];
-				objects.back().faces.back().v3 = vertices[vertices_n[2] - 1];
-				if (!vertices_texture.empty())
-				{
-					objects.back().faces.back().vt1 = vertices_texture[textures_n[0] - 1];
-					objects.back().faces.back().vt2 = vertices_texture[textures_n[1] - 1];
-					objects.back().faces.back().vt3 = vertices_texture[textures_n[2] - 1];
-				}
-				if (!vertices_normal.empty())
-				{
-					objects.back().faces.back().vn1 = vertices_normal[normals_n[0] - 1];
-					objects.back().faces.back().vn2 = vertices_normal[normals_n[1] - 1];
-					objects.back().faces.back().vn3 = vertices_normal[normals_n[2] - 1];
-				}
-				objects.back().faces.back().mtl = use_mtl;
-			}
-			else if (type == "usemtl") {
-				string mtl_name;
-				line_str >> mtl_name;
-				SDL_Log("Use material: %s", mtl_name.c_str());
-				use_mtl = nullptr;
-				for (material &mtl : materials) {
-					if (mtl.name == mtl_name) {
-						use_mtl = &mtl;
-					}
-				}
-				if (use_mtl == nullptr) {
-					SDL_Log("Error material not found");
-				}
-			}
-			else if (type == "mtllib") {
-				std::string mtl_path;
-				line_str >> mtl_path;
-				SDL_Log("Open Material library: %s", mtl_path.c_str());
-				std::ifstream mtl(path_base + mtl_path);
-				char line_m[1024];
-
-				while (!mtl.eof()) {
-					mtl.getline(line_m, 1024);
-					std::strstream line_m_str;
-					line_m_str << line_m;
-
-					string type_m;
-					line_m_str >> type_m;
-					if (type_m == "newmtl") {
-						materials.emplace_back();
-						line_m_str >> materials.back().name;
-						SDL_Log("New material: %s", materials.back().name.c_str());
-					}
-					else if (type_m == "Ns") {
-						line_m_str >> materials.back().Ns;
-					}
-					else if (type_m == "Ka") {
-						float r, g, b;
-						line_m_str >> r >> g >> b;
-						materials.back().Ka.r = r;
-						materials.back().Ka.g = g;
-						materials.back().Ka.b = b;
-					}
-					else if (type_m == "Kd") {
-						float r, g, b;
-						line_m_str >> r >> g >> b;
-						materials.back().Kd.r = r;
-						materials.back().Kd.g = g;
-						materials.back().Kd.b = b;
-					}
-					else if (type_m == "Ks") {
-						float r, g, b;
-						line_m_str >> r >> g >> b;
-						materials.back().Ks.r = r;
-						materials.back().Ks.g = g;
-						materials.back().Ks.b = b;
-					}
-					else if (type_m == "Ke") {
-						float r, g, b;
-						line_m_str >> r >> g >> b;
-						materials.back().Ke.r = r;
-						materials.back().Ke.g = g;
-						materials.back().Ke.b = b;
-					}
-					else if (type_m == "Ni") {
-						line_m_str >> materials.back().Ni;
-					}
-					else if (type_m == "d") {
-						line_m_str >> materials.back().d;
-						materials.back().Tr = 1 / materials.back().d;
-						materials.back().Kd.a = materials.back().d;
-					}
-					else if (type_m == "Tr") {
-						line_m_str >> materials.back().Tr;
-						materials.back().d = 1 / materials.back().Tr;
-						materials.back().Kd.a = materials.back().d;
-					}
-					else if (type_m == "map_Ka") {
-						string map_filename;
-						line_m_str >> map_filename;
-						map_filename = path_base + map_filename;
-						SDL_Surface* image = IMG_Load(map_filename.c_str());
-						if (image == nullptr) {
-							SDL_Log("Error loading texture Ka: %s", map_filename.c_str());
-						}
-						materials.back().map_Ka = SDL_CreateTextureFromSurface(gRenderer, image);
-					}
-					else if (type_m == "map_Kd") {
-						string map_filename;
-						line_m_str >> map_filename;
-						map_filename = path_base + map_filename;
-						SDL_Surface* image = IMG_Load(map_filename.c_str());
-						if (image== nullptr) {
-							SDL_Log("Error loading texture Kd: %s", map_filename.c_str());
-						}
-						materials.back().map_Kd = SDL_CreateTextureFromSurface(gRenderer, image);
-					}
-					else if (type_m == "map_Ks") {
-						string map_filename;
-						line_m_str >> map_filename;
-						map_filename = path_base + map_filename;
-						SDL_Surface* image = IMG_Load(map_filename.c_str());
-						if (image== nullptr) {
-							SDL_Log("Error loading texture Ks: %s", map_filename.c_str());
-						}
-						materials.back().map_Ks = SDL_CreateTextureFromSurface(gRenderer, image);
-					}
-					else if (type_m == "map_Ns") {
-						string map_filename;
-						line_m_str >> map_filename;
-						if(map_filename[1] != ':') map_filename = path_base + map_filename;
-						SDL_Surface* image = IMG_Load(map_filename.c_str());
-						if (image== nullptr) {
-							SDL_Log("Error loading texture Ns: %s", map_filename.c_str());
-						}
-						materials.back().map_Ns = SDL_CreateTextureFromSurface(gRenderer, image);
-					}
-				}
-			}
-		}
-	}
+	SDL_ShowOpenFileDialog(file_callback, &objects, nullptr, nullptr, 0, nullptr, false);
+	load_object(R"(C:\Users\Bastien\Projets\3D_render\objects\test_cube.obj)", &objects, gRenderer);
 
 	// Setup SDL
 	// (Some versions of SDL before <2.0.10 appears to have performance/stalling issues on a minority of Windows systems,
@@ -497,4 +297,228 @@ unsigned int average_ticks(unsigned int ticks) {
 	index++;
 	if (index == 100) index = 0;
 	return static_cast<unsigned int>(sum / 100);
+}
+
+void file_callback(void *userdata, const char * const *filelist, int filter) {
+	if (filelist == nullptr) {
+		SDL_Log("Error in file dialog\n");
+		return;
+	}
+	if (*filelist == nullptr) {
+		SDL_Log("Canceled or no file selected\n");
+		return;
+	}
+	while (*filelist != nullptr) {
+		cout << "file path: " << *filelist << endl;
+		filelist++;
+	}
+}
+
+int load_object(std::filesystem::path path, std::vector<object> *objects, SDL_Renderer* renderer)
+{
+	// Create temporary new material list
+	std::vector<material*> materials;
+	//std::filesystem::path path(R"(C:\Users\Bastien\Projets\3D_render\objects\TinyMage.obj)");
+	std::ifstream file(path);
+	path.remove_filename();
+	// Create temporary new vertice list
+	std::vector<vertice_3_f> vertices;
+	// Create temporary new point list
+	std::vector<SDL_FPoint> vertices_texture;
+	// Create temporary new normal vertice list
+	std::vector<vertice_3_f> vertices_normal;
+	material* use_mtl = nullptr;
+	if (!file.is_open()) return -7;
+
+	char line[1024];
+	while (!file.eof()) {
+		file.getline(line, 1024);
+		std::strstream line_str;
+		line_str << line;
+
+		string type;
+		line_str >> type;
+		if (type == "o") {
+			objects->emplace_back();
+			line_str >> objects->back().name;
+			SDL_Log("New object: %s", objects->back().name.c_str());
+		}
+		else if (type == "v") {
+			vertice_3_f vtmp;
+			line_str >> vtmp.x >> vtmp.y >> vtmp.z;
+			vertices.push_back(vtmp);
+		}
+		else if (type == "vt") {
+			SDL_FPoint vttmp;
+			line_str >> vttmp.x >> vttmp.y;
+			vertices_texture.push_back(vttmp);
+		}
+		else if (type == "vn") {
+			vertice_3_f vntmp;
+			line_str >> vntmp.x >> vntmp.y >> vntmp.z;
+			vertices_normal.push_back(vntmp);
+		}
+		else if (type == "f") {
+			int tmp;
+			std::vector<int> vertices_n;
+			std::vector<int> textures_n;
+			std::vector<int> normals_n;
+			char sepa;
+			while (!line_str.eof()) {
+				line_str >> tmp;
+				vertices_n.push_back(tmp);
+				line_str.get(sepa);
+				if (sepa == '/' && !vertices_texture.empty()) {
+					line_str >> tmp;
+					textures_n.push_back(tmp);
+					line_str.get(sepa);
+				}
+				if (sepa == '/' && !vertices_normal.empty()) {
+					line_str >> tmp;
+					normals_n.push_back(tmp);
+					line_str.get(sepa);
+				}
+				else if (sepa == ' ') {
+				}
+			}
+			objects->back().faces.emplace_back();
+			objects->back().faces.back().v1 = vertices[vertices_n[0] - 1];
+			objects->back().faces.back().v2 = vertices[vertices_n[1] - 1];
+			objects->back().faces.back().v3 = vertices[vertices_n[2] - 1];
+			if (!vertices_texture.empty())
+			{
+				objects->back().faces.back().vt1 = vertices_texture[textures_n[0] - 1];
+				objects->back().faces.back().vt2 = vertices_texture[textures_n[1] - 1];
+				objects->back().faces.back().vt3 = vertices_texture[textures_n[2] - 1];
+			}
+			if (!vertices_normal.empty())
+			{
+				objects->back().faces.back().vn1 = vertices_normal[normals_n[0] - 1];
+				objects->back().faces.back().vn2 = vertices_normal[normals_n[1] - 1];
+				objects->back().faces.back().vn3 = vertices_normal[normals_n[2] - 1];
+			}
+			objects->back().faces.back().mtl = use_mtl;
+		}
+		else if (type == "usemtl") {
+			string mtl_name;
+			line_str >> mtl_name;
+			SDL_Log("Use material: %s", mtl_name.c_str());
+			use_mtl = nullptr;
+			for (material* mtl : materials) {
+				if (mtl->name == mtl_name) {
+					use_mtl = mtl;
+				}
+			}
+			if (use_mtl == nullptr) {
+				SDL_Log("Error material not found");
+			}
+		}
+		else if (type == "mtllib") {
+			std::string mtl_path;
+			line_str >> mtl_path;
+			SDL_Log("Open Material library: %s", mtl_path.c_str());
+			std::ifstream mtl(path.generic_string() + mtl_path);
+			char line_m[1024];
+
+			while (!mtl.eof()) {
+				mtl.getline(line_m, 1024);
+				std::strstream line_m_str;
+				line_m_str << line_m;
+
+				string type_m;
+				line_m_str >> type_m;
+				if (type_m == "newmtl") {
+					materials.emplace_back();
+					materials.back() = new material;
+					line_m_str >> materials.back()->name;
+					SDL_Log("New material: %s", materials.back()->name.c_str());
+				}
+				else if (type_m == "Ns") {
+					line_m_str >> materials.back()->Ns;
+				}
+				else if (type_m == "Ka") {
+					float r, g, b;
+					line_m_str >> r >> g >> b;
+					materials.back()->Ka.r = r;
+					materials.back()->Ka.g = g;
+					materials.back()->Ka.b = b;
+				}
+				else if (type_m == "Kd") {
+					float r, g, b;
+					line_m_str >> r >> g >> b;
+					materials.back()->Kd.r = r;
+					materials.back()->Kd.g = g;
+					materials.back()->Kd.b = b;
+				}
+				else if (type_m == "Ks") {
+					float r, g, b;
+					line_m_str >> r >> g >> b;
+					materials.back()->Ks.r = r;
+					materials.back()->Ks.g = g;
+					materials.back()->Ks.b = b;
+				}
+				else if (type_m == "Ke") {
+					float r, g, b;
+					line_m_str >> r >> g >> b;
+					materials.back()->Ke.r = r;
+					materials.back()->Ke.g = g;
+					materials.back()->Ke.b = b;
+				}
+				else if (type_m == "Ni") {
+					line_m_str >> materials.back()->Ni;
+				}
+				else if (type_m == "d") {
+					line_m_str >> materials.back()->d;
+					materials.back()->Tr = 1 / materials.back()->d;
+					materials.back()->Kd.a = materials.back()->d;
+				}
+				else if (type_m == "Tr") {
+					line_m_str >> materials.back()->Tr;
+					materials.back()->d = 1 / materials.back()->Tr;
+					materials.back()->Kd.a = materials.back()->d;
+				}
+				else if (type_m == "map_Ka") {
+					string map_filename;
+					line_m_str >> map_filename;
+					map_filename = path.generic_string() + map_filename;
+					SDL_Surface* image = IMG_Load(map_filename.c_str());
+					if (image == nullptr) {
+						SDL_Log("Error loading texture Ka: %s", map_filename.c_str());
+					}
+					materials.back()->map_Ka = SDL_CreateTextureFromSurface(renderer, image);
+				}
+				else if (type_m == "map_Kd") {
+					string map_filename;
+					line_m_str >> map_filename;
+					map_filename = path.generic_string() + map_filename;
+					SDL_Surface* image = IMG_Load(map_filename.c_str());
+					if (image== nullptr) {
+						SDL_Log("Error loading texture Kd: %s", map_filename.c_str());
+					}
+					materials.back()->map_Kd = SDL_CreateTextureFromSurface(renderer, image);
+				}
+				else if (type_m == "map_Ks") {
+					string map_filename;
+					line_m_str >> map_filename;
+					map_filename = path.generic_string() + map_filename;
+					SDL_Surface* image = IMG_Load(map_filename.c_str());
+					if (image== nullptr) {
+						SDL_Log("Error loading texture Ks: %s", map_filename.c_str());
+					}
+					materials.back()->map_Ks = SDL_CreateTextureFromSurface(renderer, image);
+				}
+				else if (type_m == "map_Ns") {
+					string map_filename;
+					line_m_str >> map_filename;
+					if(map_filename[1] != ':') map_filename = path.generic_string() + map_filename;
+					SDL_Surface* image = IMG_Load(map_filename.c_str());
+					if (image== nullptr) {
+						SDL_Log("Error loading texture Ns: %s", map_filename.c_str());
+					}
+					materials.back()->map_Ns = SDL_CreateTextureFromSurface(renderer, image);
+				}
+			}
+		}
+	}
+	return 0;
 }
