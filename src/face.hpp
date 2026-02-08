@@ -14,9 +14,9 @@
 #include "material.hpp"
 
 typedef struct face_f {
-	vertice_3_f v1, v2, v3;
+	vertice_3_f vx, vy, vz;
 	SDL_FPoint vt1, vt2, vt3;
-	vertice_3_f vn1, vn2, vn3;
+	vertice_3_f vnx, vny, vnz;
 	material* mtl;
 } face_f;
 

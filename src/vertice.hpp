@@ -13,7 +13,7 @@
 #include <SDL3/SDL.h>
 
 typedef struct vertice_3_f {
-	float x, y, z;
+	float x, y, z = NAN;
 
 	vertice_3_f operator+(const vertice_3_f& vertice) {
 		return { this->x + vertice.x, 

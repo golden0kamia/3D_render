@@ -382,9 +382,9 @@ int load_object(std::filesystem::path path, std::vector<object> *objects, SDL_Re
 				}
 			}
 			objects->back().faces.emplace_back();
-			objects->back().faces.back().v1 = vertices[vertices_n[0] - 1];
-			objects->back().faces.back().v2 = vertices[vertices_n[1] - 1];
-			objects->back().faces.back().v3 = vertices[vertices_n[2] - 1];
+			objects->back().faces.back().vx = vertices[vertices_n[0] - 1];
+			objects->back().faces.back().vy = vertices[vertices_n[1] - 1];
+			objects->back().faces.back().vz = vertices[vertices_n[2] - 1];
 			if (!vertices_texture.empty())
 			{
 				objects->back().faces.back().vt1 = vertices_texture[textures_n[0] - 1];
@@ -393,9 +393,9 @@ int load_object(std::filesystem::path path, std::vector<object> *objects, SDL_Re
 			}
 			if (!vertices_normal.empty())
 			{
-				objects->back().faces.back().vn1 = vertices_normal[normals_n[0] - 1];
-				objects->back().faces.back().vn2 = vertices_normal[normals_n[1] - 1];
-				objects->back().faces.back().vn3 = vertices_normal[normals_n[2] - 1];
+				objects->back().faces.back().vnx = vertices_normal[normals_n[0] - 1];
+				objects->back().faces.back().vny = vertices_normal[normals_n[1] - 1];
+				objects->back().faces.back().vnz = vertices_normal[normals_n[2] - 1];
 			}
 			objects->back().faces.back().mtl = use_mtl;
 		}

@@ -1,5 +1,7 @@
 #include "camera.hpp"
 
+#include <complex>
+
 camera::camera(SDL_Renderer* renderer)
 {
 	this->renderer = renderer;
@@ -16,6 +18,14 @@ int camera::render_object(std::vector<object> objects)
 	vertice_3_f camera_vec1 = diff_vertice(camera_v1_rot, camera_v2_rot);
 	vertice_3_f camera_vec2 = diff_vertice(camera_v1_rot, camera_v3_rot);
 	this->normal = cross_product(camera_vec1, camera_vec2);
+	// FOV angulare normal
+	camera_v1_rot = rot_xyz({ 0.f, 0.f, 0.f }, {static_cast<float>(M_PI)/2-this->fov/2, 0.f, 0.f});
+	camera_v2_rot = rot_xyz({ 0.f, -1.f, 0.f }, {static_cast<float>(M_PI)/2-this->fov/2, 0.f, 0.f});
+	camera_v3_rot = rot_xyz({ 1.f, 0.f, 0.f }, {static_cast<float>(M_PI)/2-this->fov/2, 0.f, 0.f});
+	camera_vec1 = diff_vertice(camera_v1_rot, camera_v2_rot);
+	camera_vec2 = diff_vertice(camera_v1_rot, camera_v3_rot);
+	vertice_3_f fov_normal = cross_product(camera_vec1, camera_vec2);
+	float view_normal_correlation = 0.00258;//1-dot_product(this->normal, fov_normal);
 
 	std::vector<vertex_geometry> trigon;
 	float length = this->length();
@@ -26,9 +36,9 @@ int camera::render_object(std::vector<object> objects)
 		// Compute each face of object
 		for (const face_f& face : obj.faces) {
 			// Get vertices of face
-			vertice_3_f v1 = face.v1;
-			vertice_3_f v2 = face.v2;
-			vertice_3_f v3 = face.v3;
+			vertice_3_f v1 = face.vx;
+			vertice_3_f v2 = face.vy;
+			vertice_3_f v3 = face.vz;
 
 			// Apply object size of face
 			vertice_3_f v1_size = v1 * obj.size;
@@ -55,9 +65,15 @@ int camera::render_object(std::vector<object> objects)
 			vertice_3_f vec1 = diff_vertice(v1_rot_cam, v2_rot_cam); // vertice.1-vertice.2
 			vertice_3_f vec2 = diff_vertice(v1_rot_cam, v3_rot_cam); // vertice.1-vertice.3
 			vertice_3_f face_normal = cross_product(vec1, vec2); // vector.1 cross vector.2
-			float normale = -dot_product(this->normal, face_normal); // camera.normal dot face.normal
-			float normalise_normal = std::copysignf((normale * normale) / (face_normal.x * face_normal.x + face_normal.y * face_normal.y + face_normal.z * face_normal.z), normale); //
-			if (normalise_normal < 0.f) continue;
+
+			vertice_3_f face_centroid = centroid(v1_rot_cam, v2_rot_cam, v3_rot_cam); // Get face center of mass
+			float face_center_hypo = std::sqrt(face_centroid.x * face_centroid.x + face_centroid.y * face_centroid.y); // Get face xy hypothenus
+			float max_normal = abs(sin(std::atan(face_center_hypo/face_centroid.z)))/face_centroid.z; // Get face relative normal ratio from position
+
+			// Calculate relative normale correlation
+			float normale_correlation = -dot_product(this->normal, face_normal); // camera.normal dot face.normal
+			float normalise_normal = std::copysignf((normale_correlation * normale_correlation) / (face_normal.x * face_normal.x + face_normal.y * face_normal.y + face_normal.z * face_normal.z), normale_correlation); //
+			if (normalise_normal < max_normal) continue; // If face do not face camera, do not render
 
 			// Create 2D positon from 3D parallax
 			SDL_FPoint v1_abs = { ((v1_rot_cam.x) / (v1_rot_cam.z)) * length , // (face.x/face.z)*camera.L
@@ -131,4 +147,8 @@ float camera::length()
 SDL_FColor color_factor(SDL_FColor color, float factor)
 {
 	return { (color.r * factor), (color.g * factor), (color.b * factor), (float)color.a };
+}
+
+vertice_3_f centroid(vertice_3_f v1, vertice_3_f v2, vertice_3_f v3) {
+	return {(v1.x+v2.x+v3.x)/3.f,(v1.y+v2.y+v3.y)/3.f,(v1.z+v2.z+v3.z)/3.f};
 }

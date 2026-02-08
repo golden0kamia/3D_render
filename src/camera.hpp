@@ -24,6 +24,8 @@ public:
 
 SDL_FColor color_factor(SDL_FColor color, float factor);
 
+vertice_3_f centroid(vertice_3_f v1, vertice_3_f v2, vertice_3_f v3);
+
 typedef struct vertex_geometry {
     SDL_Vertex v1;
     SDL_Vertex v2;
